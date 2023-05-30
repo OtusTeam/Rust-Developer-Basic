@@ -7,6 +7,8 @@
 | Инструмент | Ссылка |
 | :--: | :--: |
 | Rust | https://www.rust-lang.org/tools/install |
+| rustfmt | `rustup component add rustfmt` |
+| clippy | `rustup component add clippy` |
 | VS Code | https://code.visualstudio.com/download |
 | Rust Analyzer | https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer |
 | CodeLLDB | https://marketplace.visualstudio.com/items?itemName=vadimcn.vscode-lldb |
