@@ -8,6 +8,13 @@ pub trait Bar {
 
     /// Положить в холодильник
     fn put(&mut self, item: Self::Item);
+
+
+    fn put_multiple(&mut self, items: Vec<Self::Item>) {
+        for item in items {
+            self.put(item)
+        }
+    }
 }
 
 /// Холодильник с напитками
