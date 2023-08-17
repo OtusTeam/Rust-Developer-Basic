@@ -1,0 +1,3 @@
+# В общем случае для библиотек коммитить этот файл не принято
+test_config/**/Cargo.lock
+tracer/**/Cargo.lock
