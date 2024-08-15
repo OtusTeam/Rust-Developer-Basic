@@ -1,0 +1,14 @@
+[workspace]
+
+resolver = "2"
+
+members = [
+    "grpc_hello_world_client",
+    "grpc_hello_world_server"
+]
+
+[workspace.dependencies]
+tonic = "0.12.1"
+tonic-build = "0.12.1"
+prost = "0.13"
+tokio = { version = "1.0", features = ["rt", "rt-multi-thread", "macros"] }
