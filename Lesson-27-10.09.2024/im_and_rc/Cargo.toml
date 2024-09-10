@@ -1,0 +1,7 @@
+[workspace]
+resolver = "2"
+
+members = [
+    "db_cache",
+    "texture_loader"
+]
