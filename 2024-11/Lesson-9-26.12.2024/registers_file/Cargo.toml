@@ -1,5 +1,5 @@
 [package]
-name = "vehicle_park"
+name = "registers_file"
 version = "0.1.0"
 edition = "2021"
 
