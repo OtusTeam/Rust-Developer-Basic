@@ -28,6 +28,8 @@ fn read(rb: &mut RingBuffer, ...) -> ... {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
     // обязательно добавьте тесты
     #[test]
     fn test_1() {
