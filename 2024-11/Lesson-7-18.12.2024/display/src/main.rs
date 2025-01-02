@@ -22,20 +22,66 @@ use std::io;
 mod matrix;
 use matrix::Matrix;
 
+#[derive(Default)]
+struct Point {
+    pos_x: u32,
+    pos_y: u32,
+}
+
 struct Display {
-    // можете добавить сюда любые дополнительные поля
     matrix: Matrix,
+    cursor: Point,
+    width: u32,
+    height: u32,
 }
 
 fn create_display(max_width: u32, max_height: u32, default_colour: u8) -> Display {
-    // ваш код сюда
     Display {
         matrix: Matrix::new(max_width, max_height, default_colour),
+        cursor: Point::default(),
+        width: max_width,
+        height: max_height,
     }
 }
 
 fn process_commands(display: &mut Display, input: Vec<u64>) {
-    // ваш код сюда
+    let mut it_input = input.into_iter();
+
+    while let Some(action) = it_input.next() {
+        match action {
+            1 => change_cursor_position(
+                display,
+                it_input
+                    .next()
+                    .zip(it_input.next())
+                    .expect("Неверные формат координат курсора"),
+            ),
+            2 => change_cursor_color(display, it_input.next().expect("Не указан цвет")),
+            _ => panic!("Неверная команда"),
+        }
+    }
+}
+
+fn change_cursor_position(display: &mut Display, (pos_x, pos_y): (u64, u64)) {
+    if pos_x < display.width as u64 && pos_y < display.height as u64 {
+        display.cursor = Point {
+            pos_x: pos_x as u32,
+            pos_y: pos_y as u32,
+        };
+    } else {
+        panic!("Курсор не должен выходить за границы экрана")
+    }
+}
+
+fn change_cursor_color(display: &mut Display, color: u64) {
+    match color {
+        1..=3 => display.matrix.set_colour(
+            display.cursor.pos_x as u64,
+            display.cursor.pos_y as u64,
+            color as u8,
+        ),
+        _ => panic!("Неверный цвет"),
+    }
 }
 
 // код ниже трогать не нужно, можете просто посмотреть его
@@ -49,6 +95,7 @@ mod tests {
     fn test_happy_case() {
         let mut display = create_display(4, 4, 1);
         process_commands(&mut display, vec![1, 2, 2, 2, 3]);
+
         let mut expected = Matrix::new(4, 4, 1);
         expected.set_colour(2, 2, 3);
         assert_eq!(display.matrix, expected);
