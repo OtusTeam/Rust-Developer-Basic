@@ -24,18 +24,40 @@ use matrix::Matrix;
 
 struct Display {
     // можете добавить сюда любые дополнительные поля
+    width: u64,
+    height: u64,
     matrix: Matrix,
 }
 
 fn create_display(max_width: u32, max_height: u32, default_colour: u8) -> Display {
     // ваш код сюда
     Display {
+        width: max_width as u64,
+        height: max_height as u64,
         matrix: Matrix::new(max_width, max_height, default_colour),
     }
 }
 
 fn process_commands(display: &mut Display, input: Vec<u64>) {
     // ваш код сюда
+    if input[0] != 1 && input[3] != 2 {
+        panic!("Неверно задана последовательность действий.")
+    }
+
+    let x: u64 = input[1];
+    let y: u64 = input[2];
+    let c: u8 = match input[4] {
+        1 => 1,
+        2 => 2,
+        3 => 3,
+        _ => panic!("Неверный цвет. Ожидалось 1, 2 или 3."),
+    } as u8;
+
+    if x > display.height - 1 || y > display.width - 1 {
+        panic!("Выход за допустимые границы дисплея.")
+    }
+
+    display.matrix.set_colour(x, y, c);
 }
 
 // код ниже трогать не нужно, можете просто посмотреть его
