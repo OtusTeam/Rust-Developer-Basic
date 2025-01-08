@@ -35,7 +35,18 @@ fn create_display(max_width: u32, max_height: u32, default_colour: u8) -> Displa
 }
 
 fn process_commands(display: &mut Display, input: Vec<u64>) {
-    // ваш код сюда
+    // Эта функция написана мной - Владимиром Матковским,
+    // ChatGPT использовался исключительно для получения подсказок и теоретических объяснений.
+    // Код полностью реализован мной, с учётом полученных рекомендаций.
+    if input.len() != 5 {
+        panic!("Некорректная команда: ожидалось ровно 5 чисел");
+    } else {
+        let (row, column, color) = (input[1], input[2], input[4] as u8);
+        match color {
+            1..=3 => display.matrix.set_colour(row, column, color),
+            _ => panic!("Введен некорректный цвет! Ожидается 1, 2 или 3"),
+        }
+    }
 }
 
 // код ниже трогать не нужно, можете просто посмотреть его
@@ -97,6 +108,7 @@ fn main() {
         .split_whitespace()
         .map(|x| x.parse().unwrap())
         .collect();
+
     // Отображение дисплея
     process_commands(&mut display, commands);
 
