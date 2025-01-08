@@ -104,7 +104,6 @@ fn main() {
     input.clear();
     io::stdin().read_line(&mut input).unwrap();
     let commands = input
-        .trim()
         .split_whitespace()
         .map(|x| x.parse().unwrap())
         .collect();
@@ -117,7 +116,6 @@ fn main() {
 
 fn parse_dimensions(input: &str) -> (u32, u32) {
     let parts: Vec<u32> = input
-        .trim()
         .split_whitespace()
         .map(|x| x.parse().expect("Неверный ввод размера"))
         .collect();
