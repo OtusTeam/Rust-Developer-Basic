@@ -18,7 +18,7 @@
 
 // Важно! Обязательна проверка на ошибки. Если пользователь просит переместиться на пиксель за пределами дисплея или ввел неправильный цвет, то вам нужно кинуть панику!
 
-use std::io;
+use std::io::{self, Write};
 mod matrix;
 use matrix::Matrix;
 
@@ -81,12 +81,14 @@ mod tests {
 }
 
 fn main() {
-    println!("Введите размеры дисплея (ширина высота):");
+    print!("Введите размеры дисплея (ширина высота): ");
+    io::stdout().flush().unwrap(); // Сбрасываем буфер вывода, чтобы сообщение отобразилось сразу
     let mut input = String::new();
     io::stdin().read_line(&mut input).unwrap();
     let (width, height) = parse_dimensions(&input);
 
-    println!("Введите стандартный цвет дисплея (1 - красный, 2 - зеленый, 3 - синий):");
+    print!("Введите стандартный цвет дисплея (1 - красный, 2 - зеленый, 3 - синий): ");
+    io::stdout().flush().unwrap(); // Сбрасываем буфер вывода, чтобы сообщение отобразилось сразу
     input.clear();
     io::stdin().read_line(&mut input).unwrap();
     let default_colour = match input.trim() {
@@ -100,7 +102,8 @@ fn main() {
     let mut display = create_display(width, height, default_colour);
 
     // Ввод действий
-    println!("Введите строку с действиями:");
+    print!("Введите строку с действиями: ");
+    io::stdout().flush().unwrap(); // Сбрасываем буфер вывода, чтобы сообщение отобразилось сразу
     input.clear();
     io::stdin().read_line(&mut input).unwrap();
     let commands = input
