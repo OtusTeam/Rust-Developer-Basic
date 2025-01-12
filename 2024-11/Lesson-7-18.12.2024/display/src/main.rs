@@ -25,26 +25,113 @@ use matrix::Matrix;
 struct Display {
     // можете добавить сюда любые дополнительные поля
     matrix: Matrix,
+    cursor: Cursor,
+    width: u64,
+    height: u64,
+}
+
+impl Display {
+    fn move_cursor(&mut self, x: u64, y: u64) {
+        if x >= self.width || y >= self.height {
+            panic!("Координаты ({}, {}) выходят за пределы дисплея!", x, y);
+        }
+        self.cursor.x = x;
+        self.cursor.y = y;
+    }
+
+    fn set_colour(&mut self, colour: u8) {
+        if !(1..=3).contains(&colour) {
+            panic!("Некорректный цвет: {}", colour);
+        }
+        self.matrix.set_colour(self.cursor.x, self.cursor.y, colour);
+    }
+}
+
+struct Cursor {
+    x: u64,
+    y: u64,
 }
 
 fn create_display(max_width: u32, max_height: u32, default_colour: u8) -> Display {
     // ваш код сюда
     Display {
         matrix: Matrix::new(max_width, max_height, default_colour),
+        cursor: Cursor { x: 0, y: 0 },
+        width: max_width as u64,
+        height: max_height as u64,
     }
 }
 
+fn command_parser(unfiltered_commands_input: Vec<u64>) -> Vec<u64> {
+    let mut parsed_commands = Vec::new();
+    let mut i = 0;
+
+    while i < unfiltered_commands_input.len() {
+        match unfiltered_commands_input[i] {
+            1 => {
+                if i + 2 < unfiltered_commands_input.len() {
+                    let x = unfiltered_commands_input[i + 1];
+                    let y = unfiltered_commands_input[i + 2];
+
+                    // Добавляем команду MoveCursor
+                    parsed_commands.push(1);
+                    parsed_commands.push(x);
+                    parsed_commands.push(y);
+
+                    i += 3;
+                } else {
+                    break;
+                }
+            }
+            2 => {
+                if i + 1 < unfiltered_commands_input.len() {
+                    let color = unfiltered_commands_input[i + 1] as u8;
+
+                    // Добавляем команду SetColour
+                    parsed_commands.push(2);
+                    parsed_commands.push(color as u64);
+
+                    i += 2;
+                } else {
+                    break;
+                }
+            }
+            _ => {
+                i += 1;
+            }
+        }
+    }
+
+    parsed_commands
+}
+
 fn process_commands(display: &mut Display, input: Vec<u64>) {
-    // Эта функция написана мной - Владимиром Матковским,
-    // ChatGPT использовался исключительно для получения подсказок и теоретических объяснений.
-    // Код полностью реализован мной, с учётом полученных рекомендаций.
-    if input.len() != 5 {
-        panic!("Некорректная команда: ожидалось ровно 5 чисел");
-    } else {
-        let (row, column, color) = (input[1], input[2], input[4] as u8);
-        match color {
-            1..=3 => display.matrix.set_colour(row, column, color),
-            _ => panic!("Введен некорректный цвет! Ожидается 1, 2 или 3"),
+    let mut i = 0;
+
+    while i < input.len() {
+        match input[i] {
+            1 => {
+                if i + 2 < input.len() {
+                    let x = input[i + 1];
+                    let y = input[i + 2];
+                    display.move_cursor(x, y);
+                    i += 3;
+                } else {
+                    panic!("Некорректная команда для перемещения курсора");
+                }
+            }
+            2 => {
+                if i + 1 < input.len() {
+                    let colour = input[i + 1] as u8;
+                    display.set_colour(colour);
+                    i += 2;
+                } else {
+                    panic!("Некорректная команда для установки цвета");
+                }
+            }
+            _ => {
+                panic!("Неизвестная команда: {}", input[i]);
+            }
         }
     }
 }
@@ -106,10 +193,13 @@ fn main() {
     io::stdout().flush().unwrap(); // Сбрасываем буфер вывода, чтобы сообщение отобразилось сразу
     input.clear();
     io::stdin().read_line(&mut input).unwrap();
-    let commands = input
+    let unspecified_user_input = input
         .split_whitespace()
         .map(|x| x.parse().unwrap())
         .collect();
+
+    // Обработка введенных команд
+    let commands = command_parser(unspecified_user_input);
 
     // Отображение дисплея
     process_commands(&mut display, commands);
